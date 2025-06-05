@@ -5,15 +5,22 @@ import numpy as np
 # 方法一：设置全局字体
 # 指定一个支持中文的字体，例如 'SimHei' (黑体), 'Microsoft YaHei' (微软雅黑)
 # 注意：这些字体需要在您的操作系统中安装
-plt.rcParams['font.sans-serif'] = ['Heiti SC', 'PingFang SC', 'Arial Unicode MS']  # 用于显示中文
-plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示为方块的问题
+plt.rcParams["font.sans-serif"] = [
+    "Heiti SC",
+    "PingFang SC",
+    "Arial Unicode MS",
+]  # 用于显示中文
+plt.rcParams["axes.unicode_minus"] = False  # 解决负号显示为方块的问题
 
 
 # --------------------
 
 # --- 1. 数据生成：模拟机器人目标轨迹和实际轨迹 ---
 
-def generate_robot_trajectory(num_points=1000, helix_radius=5, helix_height=10, noise_level=0.1):
+
+def generate_robot_trajectory(
+    num_points=1000, helix_radius=5, helix_height=10, noise_level=0.1
+):
     """
     生成机器人目标轨迹（螺旋线）和带有噪声的实际轨迹。
 
@@ -50,6 +57,7 @@ def generate_robot_trajectory(num_points=1000, helix_radius=5, helix_height=10, 
 
 # --- 2. 误差计算：欧几里得距离误差 ---
 
+
 def calculate_position_error(target_pos, actual_pos):
     """
     计算机器人末端位姿的欧几里得距离误差（位置误差）。
@@ -72,6 +80,7 @@ def calculate_position_error(target_pos, actual_pos):
 
 # --- 3. 数据可视化 ---
 
+
 def visualize_error_2d(errors):
     """
     二维可视化误差随时间/步数的变化。
@@ -80,12 +89,17 @@ def visualize_error_2d(errors):
         errors (numpy.ndarray): 误差值数组。
     """
     plt.figure(figsize=(10, 6))
-    plt.plot(errors, color='blue', alpha=0.7)
-    plt.title('机器人末端位姿误差随步数变化')
-    plt.xlabel('步数 (模拟时间)')
-    plt.ylabel('欧几里得距离误差 (单位)')
+    plt.plot(errors, color="blue", alpha=0.7)
+    plt.title("机器人末端位姿误差随步数变化")
+    plt.xlabel("步数 (模拟时间)")
+    plt.ylabel("欧几里得距离误差 (单位)")
     plt.grid(True)
-    plt.axhline(y=np.mean(errors), color='r', linestyle='--', label=f'平均误差: {np.mean(errors):.3f}')
+    plt.axhline(
+        y=np.mean(errors),
+        color="r",
+        linestyle="--",
+        label=f"平均误差: {np.mean(errors):.3f}",
+    )
     plt.legend()
     plt.tight_layout()
     print("二维误差图生成。")
@@ -101,19 +115,34 @@ def visualize_trajectory_3d(target_trajectory, actual_trajectory, errors):
         errors (numpy.ndarray): 误差值数组，用于颜色编码。
     """
     fig = plt.figure(figsize=(12, 10))
-    ax = fig.add_subplot(111, projection='3d')
+    ax = fig.add_subplot(111, projection="3d")
 
     print("生成三维轨迹图...")
 
     # 绘制目标轨迹
-    ax.plot(target_trajectory[:, 0], target_trajectory[:, 1], target_trajectory[:, 2],
-            color='gray', linestyle='--', label='目标轨迹', alpha=0.6)
+    ax.plot(
+        target_trajectory[:, 0],
+        target_trajectory[:, 1],
+        target_trajectory[:, 2],
+        color="gray",
+        linestyle="--",
+        label="目标轨迹",
+        alpha=0.6,
+    )
 
     # 绘制实际轨迹点，并用颜色编码误差
     # 颜色映射：误差越大，颜色越偏向暖色（如红色）
     cmap = plt.cm.viridis_r  # 可以选择其他颜色映射，如 'jet', 'hot', 'magma_r'
-    sc = ax.scatter(actual_trajectory[:, 0], actual_trajectory[:, 1], actual_trajectory[:, 2],
-                    c=errors, cmap=cmap, s=20, alpha=0.8, label='实际轨迹 (颜色表示误差)')
+    sc = ax.scatter(
+        actual_trajectory[:, 0],
+        actual_trajectory[:, 1],
+        actual_trajectory[:, 2],
+        c=errors,
+        cmap=cmap,
+        s=20,
+        alpha=0.8,
+        label="实际轨迹 (颜色表示误差)",
+    )
 
     # 添加误差连线（可选，如果点太多可能会很密集）
     # for i in range(len(target_trajectory)):
@@ -122,12 +151,12 @@ def visualize_trajectory_3d(target_trajectory, actual_trajectory, errors):
     #             [target_trajectory[i, 2], actual_trajectory[i, 2]],
     #             color='red', linestyle=':', alpha=0.2, linewidth=0.5)
 
-    ax.set_title('机器人目标与实际轨迹及误差可视化 (三维)')
-    ax.set_xlabel('X 坐标')
-    ax.set_ylabel('Y 坐标')
-    ax.set_zlabel('Z 坐标')
+    ax.set_title("机器人目标与实际轨迹及误差可视化 (三维)")
+    ax.set_xlabel("X 坐标")
+    ax.set_ylabel("Y 坐标")
+    ax.set_zlabel("Z 坐标")
     ax.legend()
-    fig.colorbar(sc, label='位置误差')  # 添加颜色条
+    fig.colorbar(sc, label="位置误差")  # 添加颜色条
     plt.tight_layout()
     print("三维轨迹图生成。")
 
@@ -141,7 +170,9 @@ if __name__ == "__main__":
     noise_level = 0.5  # 噪声水平，可以调整查看不同误差效果
 
     # 1. 生成数据
-    target_traj, actual_traj = generate_robot_trajectory(num_points, helix_radius, helix_height, noise_level)
+    target_traj, actual_traj = generate_robot_trajectory(
+        num_points, helix_radius, helix_height, noise_level
+    )
 
     # 2. 计算误差
     errors = calculate_position_error(target_traj, actual_traj)
@@ -160,8 +191,14 @@ if __name__ == "__main__":
     print("   - 误差趋势是收敛还是发散？")
     print("2. 观察三维轨迹图：")
     print("   - 目标轨迹和实际轨迹的偏离程度。")
-    print("   - 颜色越深（或根据你选择的颜色映射，表示误差较大的颜色），表示该点的实际位置与目标位置的偏差越大。")
-    print("   - 哪些区域的误差更集中或更大？这可能与机器人运动的特定阶段（如加速、减速、转弯）或关节的性能限制有关。")
+    print(
+        "   - 颜色越深（或根据你选择的颜色映射，表示误差较大的颜色），表示该点的实际位置与目标位置的偏差越大。"
+    )
+    print(
+        "   - 哪些区域的误差更集中或更大？这可能与机器人运动的特定阶段（如加速、减速、转弯）或关节的性能限制有关。"
+    )
     print("3. 应用讨论：")
     print("   - 这种可视化可以用于：机器人精度测试、控制算法性能评估、早期故障诊断等。")
-    print("   - 例如，如果误差在特定时间或特定空间区域持续增大，则需要检查相关机械部件或控制参数。")
+    print(
+        "   - 例如，如果误差在特定时间或特定空间区域持续增大，则需要检查相关机械部件或控制参数。"
+    )
